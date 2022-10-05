@@ -1,0 +1,61 @@
+import numpy as np
+np.random.seed(0)
+nmen = 10
+nwomen = 10
+female_prefs = np.tile(np.arange(nmen), (nwomen, 1))
+#shuffle the female preferences
+for female_pref in female_prefs:
+    np.random.shuffle(female_pref)
+male_prefs = np.tile(np.arange(nwomen), (nmen, 1))
+#shuffle the male preferences
+for male_pref in male_prefs:
+    np.random.shuffle(male_pref)
+
+
+
+
+##############################################################################################
+
+
+f_pref ={}
+m_pref ={}
+for i in range(len(female_prefs)):
+    f_pref.update({i:list(female_prefs[i,:])})
+    m_pref.update({i:list(male_prefs[i,:])})
+
+##################################################################################################
+
+t_match=[]
+w_pick=[]
+m_pick=[]
+m=0
+while m < len(m_pref):
+
+    for woman in m_pref[m]:
+        
+        if woman not in w_pick:
+            f_pref.update({woman:f_pref[woman][0:f_pref[woman].index(m)+1]})
+            m_pref.update({m:m_pref[m][1:]})
+            w_pick.append(woman)
+            if m not in m_pick:
+                m_pick.append(m)
+            m = max(m_pick) + 1
+            break
+        
+        else:
+            if m in f_pref[woman]:
+                z = f_pref[woman][-1]
+                m_pick.remove(z)
+                f_pref.update({woman:f_pref[woman][0:f_pref[woman].index(m)+1]})
+                if m not in m_pick:
+                    m_pick.append(m)
+                m=z
+                
+                break
+            else:
+                continue
+        
+
+for key in f_pref:
+    t_match.append([key, f_pref[key][-1]])
+print(t_match)
